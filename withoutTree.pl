@@ -21,8 +21,10 @@ term --> [X], {number(X)}.
 
 factor, [end] --> endfeint.
 factor, [read] --> readfeint.
+factor, [write] --> writefeint.
 factor --> [+], expression.
 factor --> [-], expression.
 
 readfeint --> [read].
 endfeint --> [end].
+writefeint --> [write].
