@@ -1,16 +1,16 @@
 run(Program):-
-	s1(ParseTree,Program, []).
+	s1(Program, []).
 
 
 s1 --> [begin], s.
 
-s--> states, end.
+s--> states, endfeint.
 
 states --> [begin], s.
 states --> [read], reads, states.
 states --> [X], {\+number(X)}, [:=], expression, states. 
 states, [end] --> endfeint.
-
+states --> [write], expression, states.
 
 reads --> [X], {\+number(X)}.
 
