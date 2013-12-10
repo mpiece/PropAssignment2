@@ -1,32 +1,54 @@
 run(Program):-
-	s1(ParseTree,Program, []).
+	parse(Tree, Program,[]),
+	execute(Tree).
 
-
-s1(begin(ST)) --> [begin], s(ST).
-
-s(ST) --> states(ST), endfeint.
-
-
-
-states(assign(X,(EXP)), ST) --> [X], {\+number(X)}, [:=], expression(EXP), states(ST).
-states(write(EXP), ST) --> [write], expression(EXP), states(ST).
-states(read(RE), ST) --> [read], reads(RE), states(ST).
+parse(begin(ST1, ST)) --> [begin],states(ST1), s(ST).
+ 
+s(state(ST, F)) --> states(ST), s(F).
+s(0) --> [end].
+ 
+states(assign(X,(EXP))) --> [X], {\+number(X)}, [:=], expression(EXP).
+states(write(EXP)) --> [write], expression(EXP).
+states(read(RE)) --> [read], reads(RE).
 states(begin(ST)) --> [begin], s(ST).
-states(0), [end] --> endfeint.
-
+ 
+states -->[].
+ 
 reads(X) --> [X], {\+number(X)}.
 
-expression(exp(TRM,FC)) --> term(TRM), factor(FC).
+expression(X) --> term(X). 
+expression(add(X,Y)) --> term(X) , [+], expression(Y).
+ 
+expression(sub(X,Y)) --> term(X) , [-], expression(Y).
+
 
 term(X) --> [X], {\+number(X)}.
 term(X) --> [X], {number(X)}.
 
-factor(0), [end] --> endfeint.
-factor(0), [read] --> readfeint.
-factor(0), [write] --> writefeint.
-factor(add(EXP)) --> [+], expression(EXP).
-factor(sub(EXP)) --> [-], expression(EXP).
-
+ 
 endfeint --> [end].
 writefeint --> [write].
 readfeint --> [read].
+
+
+
+execute(begin(X,Y)):-
+	execute(X),
+	execute(Y).
+
+execute(read(X)):-
+	write(X+':'),
+  	nl,
+  	read(Y),
+	X = Y.
+
+execute(write(X)):-
+	write($X).
+
+execute(state(X,Y)):-
+	execute(X),
+	execute(Y).
+
+
+
+execute(0).
