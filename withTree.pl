@@ -32,6 +32,9 @@ readfeint --> [read].
 
 
 
+execute(begin(X),L,Var):-
+	execute(X,L,Re1).
+
 execute(begin(X,Y),L,Var):-
 	execute(X,L,Re1),
 	execute(Y,Re1,Var).
