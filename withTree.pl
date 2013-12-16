@@ -1,6 +1,6 @@
 run(Program):-
 	parse(Tree, Program,[]),
-	execute(Tree).
+	execute(Tree,[], Var).
 
 parse(begin(ST1, ST)) --> [begin],states(ST1), s(ST).
  
@@ -32,23 +32,42 @@ readfeint --> [read].
 
 
 
-execute(begin(X,Y)):-
-	execute(X),
-	execute(Y).
+execute(begin(X,Y),L,Var):-
+	execute(X,L,Re1),
+	execute(Y,Re1,Var).
 
-execute(read(X)):-
+execute(read(X),L,Var):-
 	write(X+':'),
   	nl,
   	read(Y),
-	X = Y.
+	re(X, Y, L, Var).
+	
 
-execute(write(X)):-
-	write($X).
+execute(write(X),L,Var):-
+	member(X, L) ->
+		nextto(X, Y, L),
+		write(Y)
+	; write(0).
+		
 
-execute(state(X,Y)):-
-	execute(X),
-	execute(Y).
+execute(state(X,Y),L,Var):-
+	execute(X,L,Re1),
+	execute(Y,Re1,Var).
 
 
+execute(0,L,Var).
 
-execute(0).
+re(Var,To,Li,Re):-
+	member(Var, Li) ->
+		
+		nth0(N,Li,Var),
+		E is N+1,
+		replace(Li,E,To,Re)
+	
+	;	append(Li, [Var, To], Re).
+
+	
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+
+
