@@ -1,5 +1,7 @@
 run(Program):-
+	write(Program),
 	parse(Tree, Program,[]),
+	write(Tree),
 	execute(Tree,[], Var).
 
 parse(begin(ST1, ST)) --> [begin],states(ST1), s(ST).
@@ -10,7 +12,7 @@ s(0) --> [end].
 states(assign(X,(EXP))) --> [X], {\+number(X)}, [:=], expression(EXP).
 states(write(EXP)) --> [write], expression(EXP).
 states(read(RE)) --> [read], reads(RE).
-states(begin(ST)) --> [begin], s(ST).
+states(begin(ST1, ST)) --> [begin],states(ST1), s(ST).
  
 states -->[].
  
@@ -32,8 +34,6 @@ readfeint --> [read].
 
 
 
-execute(begin(X),L,Var):-
-	execute(X,L,Re1).
 
 execute(begin(X,Y),L,Var):-
 	execute(X,L,Re1),
