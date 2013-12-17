@@ -1,17 +1,16 @@
-re(Var,T,L,R):-
-	%L = [H|T],
-	nth0(N,L,Var),
-	write(N),
-	E is N+1,
-	replace(L,E,T,R).
+grammar2(Tree)-->
+	value2(Tree).
 
+grammar2(add(Tree1,Tree2))-->
 	
-replace([_|T], 0, X, [X|T]).
-replace([H|T], I, X, [H|R]):- I > 0, I1 is I-1, replace(T, I1, X, R).
+
+	grammar2(Tree1),
+	[+],
+	value2(Tree2).
 
 
 
-addtoList(X, L):-
-	write($L),
-	append([],[X],L),
-	addtoList(B, L).
+value2(Value)-->
+	[Value],
+	{atom(Value)}.
+
